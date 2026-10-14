@@ -1,0 +1,11 @@
+{
+  "name": "本地阅读器",
+  "short_name": "阅读器",
+  "description": "纯静态电子书阅读器，书籍与进度存在浏览器本地",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#14161a",
+  "theme_color": "#14161a",
+  "orientation": "portrait",
+  "lang": "zh-CN"
+}

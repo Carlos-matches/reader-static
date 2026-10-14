@@ -1,0 +1,52 @@
+# Netlify 部署配置
+#
+# 这个文件让 Netlify 知道怎么构建和部署。
+# 在 Netlify 上导入仓库后会自动读取，无需手动配置。
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  # 用 esbuild 打包函数（Netlify 会用 esbuild 处理 TypeScript）
+  node_bundler = "esbuild"
+
+# ---------------------------------------------------------------------------
+# 把 /api/proxy 指向代理函数
+# ---------------------------------------------------------------------------
+# 浏览器请求 /api/proxy?url=... 时，Netlify 内部转发到函数。
+# 这样前端代码只需要记一个固定路径，不用管函数部署在哪。
+[[redirects]]
+  from = "/api/proxy"
+  to = "/.netlify/functions/proxy"
+  status = 200
+  force = true
+
+# ---------------------------------------------------------------------------
+# SPA 回退
+# ---------------------------------------------------------------------------
+# 任何找不到的路径都返回 index.html（单页应用需要）。
+# 注意要放在最后，否则会抢掉上面的 /api/proxy 规则。
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ---------------------------------------------------------------------------
+# 安全响应头
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # 允许访问同源的代理函数与第三方书源封面图
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'"
+
+# 静态资源长期缓存（文件名带 hash 的话可以更长，这里保守设置）
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

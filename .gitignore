@@ -1,0 +1,25 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+
+# Netlify
+.netlify/
+
+# 测试产生的临时文件
+test/**/__test_*
+.preview.log
+.srv.log
+.srv.err
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# 编辑器
+.vscode/
+.idea/
+*.swp

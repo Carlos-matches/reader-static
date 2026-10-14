@@ -1,0 +1,24 @@
+{
+  "name": "reader-static",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "纯静态本地阅读器：书籍与进度存在浏览器 IndexedDB，部署到 Netlify 即可使用",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "node test/proxy-guard.cjs && node test/proxy-handler.cjs && node test/e2e.cjs",
+    "test:e2e": "node test/e2e.cjs",
+    "test:proxy": "node test/proxy-guard.cjs && node test/proxy-handler.cjs"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  }
+}

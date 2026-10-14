@@ -2,9 +2,10 @@
 
 # 📖 本地阅读器 · 纯静态
 
-**一键部署到 Netlify　·　书籍和进度全部存在浏览器里　·　不需要任何服务器**
+**部署到 Netlify　·　书籍和进度全部存在浏览器里　·　不需要任何服务器**
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Carlos-matches/reader-static)
+> 📌 **部署请用「Import from Git」**，不要用本页的 Deploy 按钮。
+> 原因见 👉 [部署章节](#-部署到-netlify)
 
 </div>
 
@@ -51,13 +52,26 @@
 
 ---
 
-## 🚀 部署到 Netlify（3 步）
+## 🚀 部署到 Netlify
 
-### 方式一：一键部署（推荐）
+### 方式一：Import from Git（推荐 ✅）
 
-1. 把这个仓库 fork 到你的 GitHub
-2. 打开 <https://app.netlify.com/start>
-3. 选择你的仓库 → 直接点 Deploy（`netlify.toml` 已配好，不用改任何设置）
+在 Netlify 里**直接连接**这个仓库，以后每次推送都会自动重新部署。
+
+1. 打开 <https://app.netlify.com/start> 登录后，点
+   **「Import from Git」**（不是页面上的 Deploy 按钮）
+2. 选 **GitHub** → 授权 → 选择 `reader-static`
+3. 构建设置保持默认（`netlify.toml` 已写好，无需改动）
+4. 点 **Deploy site**
+
+> ⚠️ **不要用 README 顶部的「Deploy to Netlify」按钮！**
+>
+> 那个按钮会**复制**一份仓库，命名为 `reader-static-xxxxx`（随机后缀），
+> 它是**快照副本，不会跟着原仓库更新**。你之后在原仓库修的任何问题，
+> 那个副本都收不到 —— 会一直构建旧的、有问题的代码。
+>
+> 如果出现一个名字带随机后缀的仓库，说明你点到那个按钮了，
+> 删掉站点重新用「Import from Git」即可。
 
 ### 方式二：命令行
 

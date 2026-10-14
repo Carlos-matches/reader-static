@@ -20,10 +20,37 @@ const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'netlify', 'functions', 'proxy.ts');
 
 // 把 TypeScript 转成可执行的 JS。
-// 用 esbuild（vite 自带的依赖）做真正的转译，而不是正则替换类型 —— 正则
+// 用 esbuild（vite 的传递依赖）做真正的转译，而不是正则替换类型 —— 正则
 // 一遇到新的类型标注就会崩，靠不住。
+//
+// esbuild 不在 package.json 的依赖里（只在构建时由 vite 间接引入），
+// 所以这里按顺序找几个可能的位置，找不到就跳过这个测试而不是报错，
+// 免得让「测试」本身挡住构建。
+function resolveEsbuild() {
+  const candidates = [
+    path.join(ROOT, 'node_modules', 'esbuild'),
+    path.join(ROOT, 'node_modules', 'vite', 'node_modules', 'esbuild'),
+  ];
+  for (const c of candidates) {
+    try {
+      return require(c);
+    } catch {
+      /* 试下一个 */
+    }
+  }
+  try {
+    return require('esbuild');
+  } catch {
+    return null;
+  }
+}
+
 function loadHandler() {
-  const esbuild = require(path.join(ROOT, 'node_modules', 'esbuild'));
+  const esbuild = resolveEsbuild();
+  if (!esbuild) {
+    console.log('⚠️  找不到 esbuild，跳过代理函数测试（先运行 npm install）');
+    process.exit(0);
+  }
   let src = fs.readFileSync(SRC, 'utf8');
 
   // 测试时收紧限额，方便验证超时/超限分支

@@ -53,16 +53,28 @@ function loadHandler() {
   }
   let src = fs.readFileSync(SRC, 'utf8');
 
-  // 测试时收紧限额，方便验证超时/超限分支
-  src = src
+  // 构造两个版本：
+  //   fast  —— 缩短超时/体积上限，用来测「超时」和「响应过大」分支
+  //   real  —— 保留生产参数，用来测真实转发
+  //
+  // 之前只有一个缩短版，导致「公网可转发」这项测试要在一个 1.5 秒的超时里
+  // 完成一次真实网络请求，网络稍慢就误报 504。测试不应该因为环境抖动而失败。
+  const fastSrc = src
     .replace(/const MAX_BYTES = 5 \* 1024 \* 1024;/, 'const MAX_BYTES = 1024 * 1024;')
-    .replace(/const TIMEOUT_MS = 15000;/, 'const TIMEOUT_MS = 1500;');
+    .replace(/const TIMEOUT_MS = 15000;/, 'const TIMEOUT_MS = 1200;');
 
-  const out = esbuild.transformSync(src, { loader: 'ts', format: 'cjs', target: 'node22' });
-  const module_ = { exports: {} };
-  new Function('module', 'exports', 'Response', 'Request', 'URL', 'AbortController', 'fetch', 'setTimeout', 'clearTimeout',
-    out.code)(module_, module_.exports, Response, Request, URL, AbortController, fetch, setTimeout, clearTimeout);
-  return module_.exports.default;
+  const compile = code => {
+    const out = esbuild.transformSync(code, { loader: 'ts', format: 'cjs', target: 'node22' });
+    const module_ = { exports: {} };
+    new Function('module', 'exports', 'Response', 'Request', 'URL', 'AbortController', 'fetch', 'setTimeout', 'clearTimeout',
+      out.code)(module_, module_.exports, Response, Request, URL, AbortController, fetch, setTimeout, clearTimeout);
+    return module_.exports.default;
+  };
+
+  const handlerFast = compile(fastSrc);
+  const handlerReal = compile(src);
+  handlerFast.__real = handlerReal;
+  return handlerFast;
 }
 
 const handler = loadHandler();
@@ -141,7 +153,12 @@ async function main() {
 
   // ---- 8. 公网地址能真正转发（用 example.com，允许出网的 CI 里会走通）----
   try {
-    const pub = await call('https://example.com/');
+    // 用「真实超时参数」的那份 handler：这项测的是能不能转发，
+    // 不该被上面为超时分支准备的 1.2 秒限制影响。
+    const realHandler = handler.__real;
+    const pub = await realHandler(
+      new Request(`http://localhost/api/proxy?url=${encodeURIComponent('https://example.com/')}`),
+    );
     check('公网地址可转发', pub.status === 200, `status=${pub.status}`);
   } catch (err) {
     console.log(`⚠️  公网转发测试跳过（本机无法出网）：${err.message}`);

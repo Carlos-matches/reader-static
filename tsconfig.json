@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -13,7 +13,8 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "verbatimModuleSyntax": true,
-    "types": ["vite/client"]
+    // 鍚屾椂鍖呭惈 vite/client锛堟祻瑙堝櫒鍏ㄥ眬锛屽 import.meta.env锛?    // 涓?node锛坴ite.config.ts 閲岀敤鍒扮殑 process锛夈€?    //
+    // 涔嬪墠杩欓噷鍙啓浜?"vite/client"锛岃€?include 閲屽張鍖呭惈 vite.config.ts锛?    // 瀵艰嚧 Netlify 鐨?Linux 鏋勫缓鏈轰笂 process 琚垽瀹氫负鏈畾涔夈€佺紪璇戝け璐?    // 锛堟湰鏈虹宸у洜涓?TS 鑷甫鐨?lib.dom.d.ts 鑰屼茎骞搁€氳繃锛夈€?    // 鏄惧紡澹版槑 node 绫诲瀷锛屾秷闄よ繖绉嶅钩鍙板樊寮傘€?    "types": ["vite/client", "node"]
   },
   "include": ["src/**/*.ts", "netlify/**/*.ts", "vite.config.ts"]
 }

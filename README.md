@@ -4,7 +4,7 @@
 
 **一键部署到 Netlify　·　书籍和进度全部存在浏览器里　·　不需要任何服务器**
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/你的用户名/reader-static)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Carlos-matches/reader-static)
 
 </div>
 
@@ -298,7 +298,7 @@ PDF 可以用浏览器直接打开；MOBI/AZW3 需要用 Calibre 转成 EPUB。
 | 需要服务器 | ✅ **不需要** | ❌ 需要 |
 
 如果你需要多设备同步或手机 App 接入，请看
-[reader-free-deploy](https://github.com/你的用户名/reader-free-deploy)。
+[reader-free-deploy](https://github.com/Carlos-matches/reader-free-deploy)。
 </details>
 
 ---
